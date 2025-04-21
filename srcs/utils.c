@@ -1,0 +1,89 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aboumata <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/20 23:46:48 by aboumata          #+#    #+#             */
+/*   Updated: 2025/04/20 23:46:50 by aboumata         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "so_long.h"
+
+void    error_exit(char *message, t_game *game)
+{
+    write(2, "Error\n", 6);
+    write(2, message, ft_strlen(message));
+    write(2, "\n", 1);
+    free_game(game);
+    exit(1);
+}
+
+void    free_game(t_game *game)
+{
+    int i;
+
+    if (game->map)
+    {
+        i = 0;
+        while (game->map[i])
+            free(game->map[i++]);
+        free(game->map);
+    }
+    if (game->mlx)
+    {
+        if (game->win)
+            mlx_destroy_window(game->mlx, game->win);
+        if (game->wall)
+            mlx_destroy_image(game->mlx, game->wall);
+        if (game->floor)
+            mlx_destroy_image(game->mlx, game->floor);
+        if (game->player)
+            mlx_destroy_image(game->mlx, game->player);
+        if (game->collectible)
+            mlx_destroy_image(game->mlx, game->collectible);
+        if (game->exit)
+            mlx_destroy_image(game->mlx, game->exit);
+        mlx_destroy_display(game->mlx);
+        free(game->mlx);
+    }
+}
+
+void    init_game(t_game *game)
+{
+    ft_memset(game, 0, sizeof(t_game));
+}
+
+void    free_array(char **array)
+{
+    int i;
+
+    if (!array)
+        return ;
+    i = 0;
+    while (array[i])
+        free(array[i++]);
+    free(array);
+}
+
+char    *ft_strdup(const char *s1)
+{
+    char    *copy;
+    size_t  len;
+    size_t  i;
+
+    len = ft_strlen(s1);
+    copy = malloc(len + 1);
+    if (!copy)
+        return (NULL);
+    i = 0;
+    while (i < len)
+    {
+        copy[i] = s1[i];
+        i++;
+    }
+    copy[i] = '\0';
+    return (copy);
+}

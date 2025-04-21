@@ -15,8 +15,7 @@
 static void read_map(char *map_file, t_game *game)
 {
     int fd;
-    char *line;
-    char **temp_map;
+    char *line = NULL;
     int line_count = 0;
     int i;
     int last_non_empty = -1;
@@ -25,41 +24,23 @@ static void read_map(char *map_file, t_game *game)
     if (fd < 0)
         error_exit("Map file not found", game);
 
-    temp_map = malloc(sizeof(char *) * 1024);
+    game->map = malloc(sizeof(char *) * 1024);
     while ((line = get_next_line(fd)) != NULL)
     {
         char *nl = ft_strchr(line, '\n');
-        if (nl) *nl = '\0';
-        temp_map[line_count] = line;
+        if (nl)
+            *nl = '\0';
+        game->map[line_count] = line;
         if (ft_strlen(line) > 0)
             last_non_empty = line_count;
         line_count++;
     }
+    game->map[line_count] = NULL;
+
     close(fd);
 
     if (last_non_empty == -1)
-    {
-        free(temp_map);
         error_exit("Map is empty", game);
-    }
-
-    for (i = 0; i <= last_non_empty; i++)
-    {
-        if (ft_strlen(temp_map[i]) == 0)
-        {
-            while (line_count-- > 0)
-                free(temp_map[line_count]);
-            free(temp_map);
-            error_exit("Empty line in map", game);
-        }
-    }
-
-    game->map = malloc(sizeof(char *) * (last_non_empty + 2));
-    for (i = 0; i <= last_non_empty; i++)
-        game->map[i] = temp_map[i];
-    game->map[i] = NULL;
-    free(temp_map);
-
     game->map_height = last_non_empty + 1;
     game->map_width = ft_strlen(game->map[0]);
 
@@ -67,7 +48,6 @@ static void read_map(char *map_file, t_game *game)
     {
         if (ft_strlen(game->map[i]) != game->map_width)
         {
-            free_game(game);
             error_exit("Map is not rectangular", game);
         }
     }

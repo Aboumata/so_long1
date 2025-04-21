@@ -36,6 +36,8 @@ void	move_player(int keycode, t_game *game)
         new_x++;
     if (game->map[new_y][new_x] != '1')
     {
+        if (game->map[new_y][new_x] == 'E' && game->collectibles != 0)
+            return;
         game->moves++;
         printf("Moves: %d\n", game->moves);
         if (game->map[new_y][new_x] == 'C')

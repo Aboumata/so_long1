@@ -53,7 +53,20 @@ void    free_game(t_game *game)
 
 void    init_game(t_game *game)
 {
-    ft_memset(game, 0, sizeof(t_game));
+	game->mlx = NULL;
+	game->win = NULL;
+	game->map = NULL;
+	game->map_width = 0;
+	game->map_height = 0;
+	game->wall = NULL;
+	game->floor = NULL;
+	game->collectible = NULL;
+	game->exit = NULL;
+	game->player = NULL;
+	game->player_x = 0;
+	game->player_y = 0;
+	game->collectibles = 0;
+	game->moves = 0;
 }
 
 void    free_array(char **array)

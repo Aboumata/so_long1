@@ -61,3 +61,37 @@ void	render_map(t_game *game)
     mlx_put_image_to_window(game->mlx, game->win, game->player,
         game->player_x * TILE_SIZE, game->player_y * TILE_SIZE);
 }
+
+int	ft_strcmp(char *s1, char *s2)
+{
+    int	i;
+
+    i = 0;
+    while (s1[i])
+    {
+        if (s1[i] != s2[i])
+            return (0);
+        i++;
+    }
+    if (s2[i])
+        return (0);
+    return (1);
+}
+
+void	check_name(char *str)
+{
+    int	i;
+    int	dot_index;
+
+    i = 0;
+    dot_index = -1;
+    while (str[i])
+    {
+        if (str[i] == '.')
+            dot_index = i;
+        i++;
+    }
+    if (dot_index <= 0 || str[dot_index - 1] == '/'
+        || !ft_strcmp(&str[dot_index], ".ber"))
+        exit((write(1, "Error\ninvalid name\n", 20), 0));
+}

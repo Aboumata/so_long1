@@ -50,6 +50,8 @@ void	validate_map(char *map_file, t_game *game);
 void	check_map_contents(t_game *game);
 void	check_walls(t_game *game);
 int		validate_path(t_game *game);
+void	check_name(char *str);
+
 
 // Graphics
 void	load_textures(t_game *game);

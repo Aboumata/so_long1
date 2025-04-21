@@ -16,9 +16,10 @@ int	main(int argc, char **argv)
 {
     t_game	game;
 
+    init_game(&game);
     if (argc != 2)
         error_exit("Usage: ./so_long <map_file.ber>", &game);
-    init_game(&game);
+    check_name(argv[1]);
     validate_map(argv[1], &game);
     game.mlx = mlx_init();
     game.win = mlx_new_window(game.mlx, game.map_width * TILE_SIZE,
@@ -26,7 +27,7 @@ int	main(int argc, char **argv)
     load_textures(&game);
     render_map(&game);
     mlx_hook(game.win, 17, 0, close_game, &game);
-    mlx_key_hook(game.win, key_hook, &game);
+    mlx_hook(game.win, 2, 1L << 0, key_hook, &game);
     mlx_loop(game.mlx);
     return (0);
 }

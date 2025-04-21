@@ -40,7 +40,7 @@ static void	fill(char **copy, int x, int y, t_game *game)
 {
     if (x < 0 || y < 0 || x >= game->map_width || y >= game->map_height)
         return ;
-    if (copy[y][x] == '1' || copy[y][x] == 'X')
+    if (copy[y][x] == '1' || copy[y][x] == 'X' || copy[y][x] == 'E')
         return ;
     copy[y][x] = 'X';
     fill(copy, x + 1, y, game);
@@ -60,7 +60,7 @@ static int	check_path(char **copy, t_game *game)
         x = -1;
         while (++x < game->map_width)
         {
-            if (copy[y][x] == 'C' || copy[y][x] == 'E')
+            if (copy[y][x] == 'C')
                 return (0);
         }
     }

@@ -14,50 +14,55 @@
 
 int	close_game(t_game *game)
 {
-    free_game(game);
-    exit(0);
-    return (0);
+	free_game(game);
+	exit(0);
+	return (0);
+}
+
+static void	update_position(t_game *game, int x, int y)
+{
+	game->moves++;
+	write(1, "Moves: ", 7);
+	ft_putnbr_fd(game->moves, 1);
+	write(1, "\n", 1);
+	if (game->map[y][x] == 'C')
+		game->collectibles--;
+	if (game->map[y][x] == 'E' && game->collectibles == 0)
+		close_game(game);
+	game->map[game->player_y][game->player_x] = '0';
+	game->player_x = x;
+	game->player_y = y;
+	game->map[y][x] = 'P';
+	render_map(game);
 }
 
 void	move_player(int keycode, t_game *game)
 {
-    int	new_x;
-    int	new_y;
+	int	x;
+	int	y;
 
-    new_x = game->player_x;
-    new_y = game->player_y;
-    if (keycode == KEY_W)
-        new_y--;
-    else if (keycode == KEY_S)
-        new_y++;
-    else if (keycode == KEY_A)
-        new_x--;
-    else if (keycode == KEY_D)
-        new_x++;
-    if (game->map[new_y][new_x] != '1')
-    {
-        if (game->map[new_y][new_x] == 'E' && game->collectibles != 0)
-            return;
-        game->moves++;
-        printf("Moves: %d\n", game->moves);
-        if (game->map[new_y][new_x] == 'C')
-            game->collectibles--;
-        if (game->map[new_y][new_x] == 'E' && game->collectibles == 0)
-            close_game(game);
-        game->map[game->player_y][game->player_x] = '0';
-        game->player_x = new_x;
-        game->player_y = new_y;
-        game->map[new_y][new_x] = 'P';
-        render_map(game);
-    }
+	x = game->player_x;
+	y = game->player_y;
+	if (keycode == KEY_W)
+		y--;
+	else if (keycode == KEY_S)
+		y++;
+	else if (keycode == KEY_A)
+		x--;
+	else if (keycode == KEY_D)
+		x++;
+	if (game->map[y][x] == '1' || (game->map[y][x] == 'E'
+			&& game->collectibles > 0))
+		return ;
+	update_position(game, x, y);
 }
 
 int	key_hook(int keycode, t_game *game)
 {
-    if (keycode == KEY_ESC)
-        close_game(game);
-    else if (keycode == KEY_W || keycode == KEY_A
-        || keycode == KEY_S || keycode == KEY_D)
-        move_player(keycode, game);
-    return (0);
+	if (keycode == KEY_ESC)
+		close_game(game);
+	else if (keycode == KEY_W || keycode == KEY_A || keycode == KEY_S
+		|| keycode == KEY_D)
+		move_player(keycode, game);
+	return (0);
 }

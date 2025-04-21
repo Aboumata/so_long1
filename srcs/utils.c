@@ -12,46 +12,51 @@
 
 #include "so_long.h"
 
-void    error_exit(char *message, t_game *game)
+void	error_exit(char *message, t_game *game)
 {
-    write(2, "Error\n", 6);
-    write(2, message, ft_strlen(message));
-    write(2, "\n", 1);
-    free_game(game);
-    exit(1);
+	write(2, "Error\n", 6);
+	write(2, message, ft_strlen(message));
+	write(2, "\n", 1);
+	free_game(game);
+	exit(1);
 }
 
-void    free_game(t_game *game)
+static void	free_images(t_game *game)
 {
-    int i;
-
-    if (game->map)
-    {
-        i = 0;
-        while (game->map[i])
-            free(game->map[i++]);
-        free(game->map);
-    }
-    if (game->mlx)
-    {
-        if (game->win)
-            mlx_destroy_window(game->mlx, game->win);
-        if (game->wall)
-            mlx_destroy_image(game->mlx, game->wall);
-        if (game->floor)
-            mlx_destroy_image(game->mlx, game->floor);
-        if (game->player)
-            mlx_destroy_image(game->mlx, game->player);
-        if (game->collectible)
-            mlx_destroy_image(game->mlx, game->collectible);
-        if (game->exit)
-            mlx_destroy_image(game->mlx, game->exit);
-        mlx_destroy_display(game->mlx);
-        free(game->mlx);
-    }
+	if (game->wall)
+		mlx_destroy_image(game->mlx, game->wall);
+	if (game->floor)
+		mlx_destroy_image(game->mlx, game->floor);
+	if (game->player)
+		mlx_destroy_image(game->mlx, game->player);
+	if (game->collectible)
+		mlx_destroy_image(game->mlx, game->collectible);
+	if (game->exit)
+		mlx_destroy_image(game->mlx, game->exit);
 }
 
-void    init_game(t_game *game)
+void	free_game(t_game *game)
+{
+	int	i;
+
+	i = 0;
+	if (game->map)
+	{
+		while (game->map[i])
+			free(game->map[i++]);
+		free(game->map);
+	}
+	if (game->mlx)
+	{
+		if (game->win)
+			mlx_destroy_window(game->mlx, game->win);
+		free_images(game);
+		mlx_destroy_display(game->mlx);
+		free(game->mlx);
+	}
+}
+
+void	init_game(t_game *game)
 {
 	game->mlx = NULL;
 	game->win = NULL;
@@ -69,34 +74,22 @@ void    init_game(t_game *game)
 	game->moves = 0;
 }
 
-void    free_array(char **array)
+char	*ft_strdup(const char *s1)
 {
-    int i;
+	char	*copy;
+	size_t	len;
+	size_t	i;
 
-    if (!array)
-        return ;
-    i = 0;
-    while (array[i])
-        free(array[i++]);
-    free(array);
-}
-
-char    *ft_strdup(const char *s1)
-{
-    char    *copy;
-    size_t  len;
-    size_t  i;
-
-    len = ft_strlen(s1);
-    copy = malloc(len + 1);
-    if (!copy)
-        return (NULL);
-    i = 0;
-    while (i < len)
-    {
-        copy[i] = s1[i];
-        i++;
-    }
-    copy[i] = '\0';
-    return (copy);
+	len = ft_strlen(s1);
+	copy = malloc(len + 1);
+	if (!copy)
+		return (NULL);
+	i = 0;
+	while (i < len)
+	{
+		copy[i] = s1[i];
+		i++;
+	}
+	copy[i] = '\0';
+	return (copy);
 }

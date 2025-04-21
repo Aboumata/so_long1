@@ -12,105 +12,73 @@
 
 #include "so_long.h"
 
-static void read_map(char *map_file, t_game *game)
+void	check_walls(t_game *game)
 {
-    int fd;
-    char *line = NULL;
-    int line_count = 0;
-    int i;
-    int last_non_empty = -1;
+	int	x;
+	int	y;
 
-    fd = open(map_file, O_RDONLY);
-    if (fd < 0)
-        error_exit("Map file not found", game);
-
-    game->map = malloc(sizeof(char *) * 1024);
-    while ((line = get_next_line(fd)) != NULL)
-    {
-        char *nl = ft_strchr(line, '\n');
-        if (nl)
-            *nl = '\0';
-        game->map[line_count] = line;
-        if (ft_strlen(line) > 0)
-            last_non_empty = line_count;
-        line_count++;
-    }
-    game->map[line_count] = NULL;
-
-    close(fd);
-
-    if (last_non_empty == -1)
-        error_exit("Map is empty", game);
-    game->map_height = last_non_empty + 1;
-    game->map_width = ft_strlen(game->map[0]);
-
-    for (i = 0; i < game->map_height; i++)
-    {
-        if (ft_strlen(game->map[i]) != game->map_width)
-        {
-            error_exit("Map is not rectangular", game);
-        }
-    }
+	y = 0;
+	while (y < game->map_height)
+	{
+		x = 0;
+		while (x < game->map_width)
+		{
+			if ((y == 0 || y == game->map_height - 1) && game->map[y][x] != '1')
+				error_exit("Map not surrounded by walls", game);
+			if ((x == 0 || x == game->map_width - 1) && game->map[y][x] != '1')
+				error_exit("Map not surrounded by walls", game);
+			x++;
+		}
+		y++;
+	}
 }
 
-void check_walls(t_game *game)
+static void	handle_tile(t_game *game, t_map_state *s)
 {
-    int x;
-    int y;
+	char	tile;
 
-    y = -1;
-    while (++y < game->map_height)
-    {
-        x = -1;
-        while (++x < game->map_width)
-        {
-            if ((y == 0 || y == game->map_height - 1) && game->map[y][x] != '1')
-                error_exit("Map not surrounded by walls", game);
-            if ((x == 0 || x == game->map_width - 1) && game->map[y][x] != '1')
-                error_exit("Map not surrounded by walls", game);
-        }
-    }
+	tile = game->map[s->y][s->x];
+	if (tile == 'E')
+		s->has_exit++;
+	else if (tile == 'P')
+	{
+		s->has_start++;
+		game->player_x = s->x;
+		game->player_y = s->y;
+	}
+	else if (tile == 'C')
+		game->collectibles++;
+	else if (!ft_strchr("01CEP", tile))
+		error_exit("Invalid map character", game);
 }
 
 void	check_map_contents(t_game *game)
 {
-    int	y;
-    int	x;
-    int	has_exit;
-    int	has_start;
+	t_map_state	s;
 
-    y = -1;
-    has_exit = 0;
-    has_start = 0;
-    game->collectibles = 0;
-    while (game->map[++y])
-    {
-        x = -1;
-        while (game->map[y][++x])
-        {
-            if (game->map[y][x] == 'E')
-                has_exit++;
-            else if (game->map[y][x] == 'P')
-            {
-                has_start++;
-                game->player_x = x;
-                game->player_y = y;
-            }
-            else if (game->map[y][x] == 'C')
-                game->collectibles++;
-            else if (!ft_strchr("01CEP", game->map[y][x]))
-                error_exit("Invalid map character", game);
-        }
-    }
-    if (has_exit != 1 || has_start != 1 || game->collectibles < 1)
-        error_exit("Map content requirements not met", game);
+	s.y = 0;
+	s.has_exit = 0;
+	s.has_start = 0;
+	game->collectibles = 0;
+	while (game->map[s.y])
+	{
+		s.x = 0;
+		while (game->map[s.y][s.x])
+		{
+			handle_tile(game, &s);
+			s.x++;
+		}
+		s.y++;
+	}
+	if (s.has_exit != 1 || s.has_start != 1 || game->collectibles < 1)
+		error_exit("Map content requirements not met", game);
 }
 
 void	validate_map(char *map_file, t_game *game)
 {
-    read_map(map_file, game);
-    check_walls(game);
-    check_map_contents(game);
-    if (!validate_path(game))
-        error_exit("No valid path in map", game);
+	read_map(map_file, game);
+	check_walls(game);
+	check_map_contents(game);
+	if (!validate_path(game))
+		error_exit("No valid path in map", game);
 }

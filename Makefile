@@ -5,6 +5,7 @@ LIBFT_DIR   = libft
 MLX_DIR     = libs/minilibx-linux
 
 SRCS        = $(SRCS_DIR)/main.c \
+			  $(SRCS_DIR)/read_maps.c \
               $(SRCS_DIR)/map_validation.c \
               $(SRCS_DIR)/graphics.c \
               $(SRCS_DIR)/hooks.c \
@@ -13,6 +14,7 @@ SRCS        = $(SRCS_DIR)/main.c \
 
 LIBFT_SRCS  = $(LIBFT_DIR)/ft_strlen.c \
               $(LIBFT_DIR)/ft_strchr.c \
+              $(LIBFT_DIR)/ft_putnbr_fd.c \
               $(LIBFT_DIR)/ft_memset.c \
               $(LIBFT_DIR)/get_next_line.c \
               $(LIBFT_DIR)/get_next_line_utils.c

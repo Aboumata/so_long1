@@ -45,13 +45,21 @@ typedef struct s_game
     int		moves;
 }	t_game;
 
+typedef struct s_map_state
+{
+    int	x;
+    int	y;
+    int	has_exit;
+    int	has_start;
+}	t_map_state;
+
 // Map validation
 void	validate_map(char *map_file, t_game *game);
 void	check_map_contents(t_game *game);
 void	check_walls(t_game *game);
 int		validate_path(t_game *game);
-void	check_name(char *str);
-
+void	check_name(char *filename);
+void	read_map(char *map_file, t_game *game);
 
 // Graphics
 void	load_textures(t_game *game);
@@ -70,8 +78,9 @@ void	free_array(char **array);
 char	*ft_strdup(const char *s1);
 
 // Libft
-int	ft_strlen(const char *s);
+int	    ft_strlen(const char *s);
 char	*ft_strchr(const char *s, int c);
 void	*ft_memset(void *b, int c, size_t len);
+void	ft_putnbr_fd(int n, int fd);
 
 #endif

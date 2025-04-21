@@ -68,7 +68,7 @@ void	free_array(char **array);
 char	*ft_strdup(const char *s1);
 
 // Libft
-size_t	ft_strlen(const char *s);
+int	ft_strlen(const char *s);
 char	*ft_strchr(const char *s, int c);
 void	*ft_memset(void *b, int c, size_t len);
 

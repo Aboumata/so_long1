@@ -1,5 +1,3 @@
-# -*- Makefile -*-
-
 NAME        = so_long
 
 SRCS_DIR    = srcs
